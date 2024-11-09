@@ -104,7 +104,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     }
 
 
-    const accessToken = generateAccessToken(admin._id, email)
+    const accessToken = generateAccessToken(admin._id)
 
 
     const data = {
@@ -124,12 +124,11 @@ const loginAdmin = asyncHandler(async (req, res) => {
 })
 
 
-const generateAccessToken = (_id, email) => {
+const generateAccessToken = (_id) => {
 
     const accessToken = jwt.sign(
         {
-            _id,
-            email
+            _id
         },
         process.env.ACCESS_TOKEN_SECRET,
         {

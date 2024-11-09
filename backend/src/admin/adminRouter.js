@@ -15,4 +15,6 @@ adminRouter.post("/register-admin",
 
 adminRouter.post("/login-admin", loginAdmin)
 
+adminRouter.post("/create-employee", authMiddleware, createEmployee)
+
 export default adminRouter
