@@ -1,23 +1,27 @@
 import { uploadOnCloudinary } from "../cloudinary/cloudinary.js"
 import { ApiError } from "../middlewares/apiError.js"
 import { asyncHandler } from "../middlewares/asyncHandler.js"
-import { Admin } from "./admin.model.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { configDotenv } from "dotenv"
-
-const getEmployees = async (req, res) => {
-
-    res.status(200)
-        .json(
-            {
-                message: 'Hello World!'
-            }
-        )
+import Employee from "../employee/employee.model.js"
+import Admin from "./admin.model.js"
 
 
+const getEmployees = asyncHandler(async (_, res) => {
+    
+    const employees = await Employee.find()
+    console.log(employees)
 
-}
+    if(!employees) {
+        throw new ApiError(404, "employees not found")
+    }
+
+
+    res.status(200).json({
+        success: true,
+        employees
+    })
+})
 
 
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -86,7 +90,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
 const loginAdmin = asyncHandler(async (req, res) => {
 
-
     const { email, password } = req.body
 
     const admin = await Admin.findOne({ email })
@@ -109,13 +112,18 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
     const data = {
         email: admin.email,
-        accessToken: accessToken
-        
+
+    }
+
+    const options = {
+        httpOnly: true,
+        secure: true
     }
 
 
 
     res.status(200)
+        .cookie("accessToken", accessToken, options)
         .json({
             "status": 200,
             "message": "login successfull",
@@ -142,6 +150,102 @@ const generateAccessToken = (_id) => {
 }
 
 
+const createEmployee = asyncHandler(async (req, res) => {
 
-export { getEmployees, registerAdmin, loginAdmin }
+    const { name, email, role, designation, phone, gender } = req.body
+
+    if ([name, email, role, phone, designation, gender].some((field) => {
+
+        return field?.trim() === ""
+    })) {
+
+        throw new ApiError(400, "Please fill all the fields(username, email, password, role, phone, gender)")
+    }
+
+    console.log("just checking for debugging purpose1")
+    const employee = await Employee.findOne({ email })
+
+
+
+    if (employee) {
+        throw new ApiError(400, "employee or email already exists")
+    }
+    console.log("just checking for debugging purpose 2")
+
+    const profileImageLocalPath = req.file.path
+    console.log("just checking for debugging purpose 3")
+
+    if (!profileImageLocalPath) {
+        throw new ApiError(400, "Profile image is required")
+    }
+
+
+    console.log("just checking for debugging purpose 4")
+
+    const profileImage = await uploadOnCloudinary(profileImageLocalPath)
+
+    if (!profileImage) {
+        throw new ApiError(400, "image is not found in local storage")
+    }
+    console.log(profileImage)
+
+
+    console.log("just checking for debugging purpose 5")
+
+    const employeeData = await Employee.create({
+        name,
+        email,
+        role,
+        phone,
+        designation,
+        gender,
+        profileImage: profileImage.url
+    })
+
+    console.log("just checking for debugging purpose 6")
+
+    console.log(employeeData)
+
+
+
+
+    res.status(201)
+        .json(
+            {
+                status: "success",
+                message: "Employee created successfully",
+                data: employeeData
+            }
+        )
+})
+
+
+const logoutAdmin = asyncHandler(async (req, res) => {
+
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .json({
+            status: 200,
+            message: "logout successfull"
+        })
+
+
+})
+
+
+
+//TODO: LATER AFTER FRONTEND IS DONE
+// const editEmployee = asyncHandler(async (req, res) => {
+    
+// })
+
+
+export { getEmployees, registerAdmin, loginAdmin, createEmployee, logoutAdmin }
 

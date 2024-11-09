@@ -4,11 +4,9 @@ import mongoose, { Schema } from "mongoose"
 const employeeSchema  = new Schema(
 {
    
-    username:{
+    name: {
         type: String,
-        required: true,
-        unique: true,
-        lowercase: true
+        required: true
     },
     email:{
         type: String,
@@ -16,11 +14,11 @@ const employeeSchema  = new Schema(
         unique: true,
         lowercase: true
     },
-    password:{
+    role:{
         type: String,
         required: true
     },
-    role:{
+    designation:{
         type: String,
         required: true
     },
@@ -41,4 +39,5 @@ const employeeSchema  = new Schema(
 }, {timestamps: true})
 
 
-export const Employee = mongoose.model('Employee', employeeSchema)
+const Employee = mongoose.model('Employee', employeeSchema)
+export default Employee
