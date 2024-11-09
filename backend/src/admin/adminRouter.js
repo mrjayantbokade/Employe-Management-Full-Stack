@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getEmployees, registerAdmin } from "./adminController.js";
+import { getEmployees, loginAdmin, registerAdmin } from "./adminController.js";
 import  {upload}  from "../middlewares/multer.js";
 
 
@@ -13,5 +13,6 @@ adminRouter.post("/register-admin",
      upload.single('profileImage'),
      registerAdmin )
 
+adminRouter.post("/login-admin", loginAdmin)
 
 export default adminRouter
