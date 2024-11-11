@@ -269,11 +269,43 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 
 
 
-    //TODO: LATER AFTER FRONTEND IS DONE
-    // const editEmployee = asyncHandler(async (req, res) => {
+    const editEmployee = asyncHandler(async (req, res) => {
+        const { name, email, role, designation, phone, gender } = req.body;
+    
+        if (!name && !email && !role && !designation && !phone && !gender) {
+            throw new ApiError(400, "At least one field is required");
+        }
+    
+        const employee = await Employee.findById(req.params._id);
+        if (!employee) {
+            throw new ApiError(404, "Employee not found");
+        }
+    
+        const updatedFields = {};
+        if (name && name !== employee.name) updatedFields.name = name;
+        if (email && email !== employee.email) updatedFields.email = email;
+        if (role && role !== employee.role) updatedFields.role = role;
+        if (designation && designation !== employee.designation) updatedFields.designation = designation;
+        if (phone && phone !== employee.phone) updatedFields.phone = phone;
+        if (gender && gender !== employee.gender) updatedFields.gender = gender;
+    
+        if (Object.keys(updatedFields).length === 0) {
+            return res.status(200).json({
+                status: "success",
+                message: "No changes detected",
+                data: employee,
+            });
+        }
+    
+        const response = await Employee.findByIdAndUpdate(req.params._id, updatedFields, { new: true });
+    
+        res.status(200).json({
+            status: "success",
+            message: "Employee updated successfully",
+            data: response,
+        });
+    });
+    
 
-    // })
-
-
-    export { getEmployees, registerAdmin, loginAdmin, createEmployee, logoutAdmin, deleteEmployee }
+    export { getEmployees, registerAdmin, loginAdmin, createEmployee, logoutAdmin, deleteEmployee, editEmployee }
 
