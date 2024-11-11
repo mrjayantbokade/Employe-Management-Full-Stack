@@ -1,4 +1,15 @@
+import axios from "axios";
+
 const Header = () => {
+    const logoutHandler = async () => {
+
+        await  axios.post("http://localhost:7777/api/v1/logout-admin")
+        localStorage.clear()
+        window.location.reload()
+
+    }
+
+
     return (
         <>
             <div className={` bg-gray-800 px-5 w-full py-3 justify-center items-center  `}>
@@ -12,7 +23,7 @@ const Header = () => {
 
                     <div className={`flex flex-row gap-8 text-white items-center`}>
 
-                        <button className={`py-1 px-2 bg-red-600 text-white rounded`}>
+                        <button onClick={logoutHandler} className={`py-1 px-2 bg-red-600 text-white rounded`}>
                             logout
                         </button>
                     </div>

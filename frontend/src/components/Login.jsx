@@ -4,10 +4,12 @@ import axios from "axios";
 
 const Login =  () => {
 
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loginData, setLoginData] = useState("")
     const [show, setShow] = useState("hidden")
+
 
 
 
@@ -19,13 +21,16 @@ const Login =  () => {
             password
         }
         try {
-            const comingdata = await axios.post("http://localhost:7777/api/v1/login-admin", credentials, {
+            const comingData = await axios.post("http://localhost:7777/api/v1/login-admin", credentials, {
                 withCredentials: true
             })
 
+            if (comingData){
+                localStorage.clear()
+                localStorage.setItem('accessToken', comingData.data.data.accessToken)
+                window.location.reload()
 
-
-            console.log(comingdata,)
+            }
         } catch (error) {
             console.log("Error Status Code:", error.response.status)
             if (error.response.status) {
@@ -38,9 +43,13 @@ const Login =  () => {
 
 
 
+
+
         setEmail('')
         setPassword('')
     }
+
+
     return (
         <div className={`flex flex-col  gap-10 justify-center items-center h-screen w-screen fixed`}>
             <div className={`${show} bg-white px-2 py-1 rounded-md `}>
@@ -79,6 +88,5 @@ const Login =  () => {
         </div>
     )
 }
-
 
 export default Login
