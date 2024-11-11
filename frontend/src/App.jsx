@@ -24,7 +24,7 @@ function App() {
     }, []);
 
     return (
-        <div className="bg-gray-700 h-screen w-screen">
+        <div className="bg-gray-700 h-screen w-screen fixed">
             {isTokenAvailable ? (
                 <>
                     <Header />

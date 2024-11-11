@@ -16,8 +16,7 @@ function App() {
         checkToken();
 
         window.addEventListener('storage', checkToken);
-        localStorage.clear()
-        
+
 
         return () => {
             window.removeEventListener('storage', checkToken);

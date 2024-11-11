@@ -3,7 +3,8 @@ import axios from "axios";
 const Header = () => {
     const logoutHandler = async () => {
 
-        await  axios.post("http://localhost:7777/api/v1/logout-admin")
+         const comingData = await  axios.post("http://localhost:7777/api/v1/logout-admin")
+        console.log(comingData)
         localStorage.clear()
         window.location.reload()
 

@@ -41,10 +41,7 @@ const EmployeeForm = () => {
         try {
             const response = await axios.post(
                 "http://localhost:7777/api/v1/create-employee",
-                formData,
-                {
-                    withCredentials: true
-                }
+                formData, credentials: true
 
             );
             console.log(response.data); // Handle the response as needed
