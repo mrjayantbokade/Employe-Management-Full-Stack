@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getEmployees, loginAdmin, registerAdmin, createEmployee, logoutAdmin } from "./adminController.js";
+import { getEmployees, loginAdmin, registerAdmin, createEmployee, logoutAdmin, deleteEmployee } from "./adminController.js";
 import { upload } from "../middlewares/multer.js";
 import verifyJWT from "../middlewares/authMiddleware.js";
 
@@ -24,5 +24,8 @@ adminRouter.post("/create-employee",
 
 
 adminRouter.post("/logout-admin", logoutAdmin)
+
+adminRouter.delete("/delete-employee/:_id",verifyJWT, deleteEmployee)
+
 
 export default adminRouter
